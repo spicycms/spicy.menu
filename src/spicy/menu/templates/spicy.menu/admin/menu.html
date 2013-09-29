@@ -1,0 +1,35 @@
+{% if perms.menu %}{% load url from future %}
+
+<li class="dark-nav{% if "/admin/menu/" in request.path %} active{% endif %}">
+  <span class="glow"></span>
+  <a class="accordion-toggle collapsed" data-toggle="collapse" href="#menu">
+    <i class="icon-list icon-2x"></i>
+    <span>{% trans "Menu" %}
+      <i class="icon-caret-down"></i>
+    </span>
+  </a>
+
+  <ul id="menu" class="collapse {% if "/admin/menu/" in request.path %} in{% endif %}">
+    <li>
+      <a href="{% url 'menu:admin:create' %}">
+        <i class="icon-plus-sign-alt"></i> {% trans "Create menu" %}
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'menu:admin:index' %}">
+        <i class="icon-list-alt"></i> {% trans "All menus" %}
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'menu:admin:entry-add' %}">
+        <i class="icon-plus-sign-alt"></i> {% trans "Create menu entry" %}
+      </a>
+    </li>
+    <li>
+      <a href="{% url 'menu:admin:entry-list' %}">
+        <i class="icon-list-alt"></i> {% trans "All menu entries" %}
+      </a>
+    </li>
+  </ul>
+</li>
+{% endif %}
