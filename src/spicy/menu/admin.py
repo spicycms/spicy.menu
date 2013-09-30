@@ -103,7 +103,9 @@ def entry_list(request):
     nav = NavigationFilter(request)
     paginator = nav.get_queryset_with_paginator(models.MenuEntry)
     objects_list = paginator.current_page.object_list
-    return {'paginator': paginator, 'objects_list': objects_list, 'nav': nav}
+    return {
+        'paginator': paginator, 'objects_list': objects_list, 'nav': nav,
+        'edit_url': 'menu:admin:entry-edit'}
 
 
 @is_staff(required_perms='menu.add_menuentry')
@@ -116,7 +118,10 @@ def entry_add(request):
             return http.HttpResponseRedirect(reverse(
                 'menu:admin:entry-list'))
     else:
-        form = forms.EntryForm(initial={'menu': request.GET.get('menu')})
+        form = forms.EntryForm(
+            initial={
+                'menu': request.GET.get('menu'),
+                'parent': request.GET.get('parent')})
     return {'form': form}
 
 
@@ -132,7 +137,11 @@ def entry_edit(request, entry_id):
                 'menu:admin:entry-list'))
     else:
         form = forms.EntryForm(instance=entry)
-    return {'form': form}
+    return {
+        'form': form, 'add_url_name': _('Add sub entry'),
+        'add_url': u'{url}?menu={menu}&parent={parent}'.format(
+            url=reverse('menu:admin:entry-add'), menu=entry.menu_id,
+            parent=entry_id)}
 
 
 @is_staff(required_perms='menu.delete_menuentry')

@@ -1,6 +1,9 @@
-from django import templeate
+from copy import copy
+from django import template
+from django.utils.safestring import mark_safe
+from spicy.menu import models
 
-register = templeate.Library()
+register = template.Library()
 
 
 class MenuNode(template.Node):
@@ -23,41 +26,45 @@ class MenuNode(template.Node):
         Render node list starting from tree top.
         """
         return u''.join([
-            self.render_entry(
-                context, entry, children, {'is_root': True}, **data)
-            for entry, children in tree.iteritems()])
+            self.render_entry(context, tree, is_root=True)])
         
-    def render_entry(self, context, entry, children, extra_data=None, **data):
+    def render_entry(self, context, tree, **extra_data):
         """
         Render a single entry.
 
         Adds some extra variables in entry context. This method calls itself
         recursively.
         """
-        entry_context = context.copy()
-        menu = {}
-        entry_context['menu'] = menu
-        menu.update(data)
-        if children:
-            menu['children'] = u''.join([
-                self.render_entry(context, entry, child, **child_data)
-                for child, child_data in self.get_child_data(
-                    children, extra_data)])
-        return self.nodelist.render(entry_context)
+        result = u''
+        if tree:
+            for entry, child_data, children in self.get_child_data(tree):
+                entry_context = copy(context)
+                data = {}
+                children_results = []
+                child_data.update(extra_data)
+                if children:
+                    children_results.append(
+                        self.render_entry(
+                            context, children))
+                child_data['children'] = mark_safe(u''.join(children_results))
+                entry_context['menu'] = child_data
+                result += self.nodelist.render(entry_context)
+        return result
 
-    def get_child_data(self, children, extra_data):
+    def get_child_data(self, tree):
         """
         Set entry, first, last variables for entry context.
         """
-        num_children = len(children)
-        for i, child in enumerate(children):
+        tree_len = len(tree)
+        for i, (entry, children) in enumerate(tree.iteritems()):
             data = {}
-            data['entry'] = child
+            data['entry'] = entry
+            data['title'] = entry.title or unicode(entry.consumer)
+            data['url'] = entry.url or (
+                entry.consumer and entry.consumer.get_absolute_url()) or u''
             data['first'] = i == 0
-            data['last'] = i == num_children - 1
-            if extra_data:
-                data.update(extra_data)
-            yield child, data
+            data['last'] = i == tree_len - 1
+            yield entry, data, children
 
 
 @register.tag
@@ -68,8 +75,8 @@ def menu(parser, token):
     <ul>
     {% endif %}    
       <li>
-        {% if menu.is_root %}<h2>{{ menu.entry.title }}</h2>
-        {% else %}{{ menu.entry.title }}
+        {% if menu.is_root %}<h2>{{ menu.title }}</h2>
+        {% else %}{{ menu.title }}
         {% endif %}
         {{ menu.children }}
       </li>
@@ -96,7 +103,7 @@ def menu(parser, token):
       </li>
     </ul>
     """
-   try:
+    try:
         tag_name, arg = token.contents.split(None, 1)
     except ValueError:
         raise template.TemplateSyntaxError(
