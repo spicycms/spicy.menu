@@ -86,7 +86,7 @@ def menu(parser, token):
     {% endif %}
     {% endmenu %}
 
-    Example outpute:
+    Example output:
     <ul>
       <li>
         <h2>Top level menu</h2>
