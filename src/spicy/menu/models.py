@@ -72,6 +72,9 @@ class MenuEntry(models.Model):
         help_text=_('Use if no content is attached'))
     position = models.PositiveSmallIntegerField(_('Position'))
 
+    def has_consumer(self):
+        return bool(self.consumer_type_id and self.consumer_id)
+
     class Meta:
         db_table = 'mn_entry'
         ordering = 'menu', 'parent__position', 'position',

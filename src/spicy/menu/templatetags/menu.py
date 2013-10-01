@@ -59,9 +59,10 @@ class MenuNode(template.Node):
         for i, (entry, children) in enumerate(tree.iteritems()):
             data = {}
             data['entry'] = entry
-            data['title'] = entry.title or unicode(entry.consumer)
+            data['title'] = entry.title or unicode(
+                entry.consumer if entry.has_consumer() else '')
             data['url'] = entry.url or (
-                entry.consumer and entry.consumer.get_absolute_url()) or u''
+                entry.has_consumer() and entry.consumer.get_absolute_url()) or u''
             data['first'] = i == 0
             data['last'] = i == tree_len - 1
             yield entry, data, children
