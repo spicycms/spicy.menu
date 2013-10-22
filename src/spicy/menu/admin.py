@@ -1,16 +1,12 @@
 # coding=utf-8
 from django import http
-from django.conf import settings
-from django.contrib.sites.models import Site
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
-
 from spicy.core.admin.conf import AdminAppBase, AdminLink, Perms
 from spicy.core.profile.decorators import is_staff
 from spicy.core.siteskin.common import NavigationFilter
-from spicy.core.siteskin.decorators import ajax_request, render_to
-
+from spicy.core.siteskin.decorators import render_to
 from . import forms, models
 
 
@@ -90,7 +86,7 @@ def delete(request, menu_id):
 
     if request.method == 'POST':
         if 'confirm' in request.POST:
-            category.delete()
+            menu.delete()
             return http.HttpResponseRedirect(
                 reverse('menu:admin:index'))
 
@@ -154,7 +150,7 @@ def entry_delete(request, entry_id):
 
     if request.method == 'POST':
         if 'confirm' in request.POST:
-            category.delete()
+            entry.delete()
             return http.HttpResponseRedirect(
                 reverse('menu:admin:index'))
 
