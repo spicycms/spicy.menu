@@ -82,13 +82,12 @@ def delete(request, menu_id):
     message = ''
     status = 'ok'
 
-    menu = get_object_or_404(models.Menu, pk=menu_id)
+    menu = get_object_or_404(models.MenuEntry, pk=menu_id)
 
-    if request.method == 'POST':
-        if 'confirm' in request.POST:
-            menu.delete()
-            return http.HttpResponseRedirect(
-                reverse('menu:admin:index'))
+    if request.method == 'POST' and 'confirm' in request.POST:
+        menu.delete()
+        return http.HttpResponseRedirect(
+            reverse('menu:admin:index'))
 
     return dict(message=unicode(message), status=status, instance=menu)
 
