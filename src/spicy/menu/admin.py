@@ -7,7 +7,7 @@ from spicy.core.admin.conf import AdminAppBase, AdminLink, Perms
 from spicy.core.profile.decorators import is_staff
 from spicy.core.siteskin.common import NavigationFilter
 from spicy.core.siteskin.decorators import render_to
-from . import forms, models
+from . import forms, models, defaults
 
 
 class AdminApp(AdminAppBase):
@@ -96,7 +96,8 @@ def delete(request, menu_id):
 @render_to('list.html', use_admin=True)
 def entry_list(request):
     nav = NavigationFilter(request)
-    paginator = nav.get_queryset_with_paginator(models.MenuEntry)
+    paginator = nav.get_queryset_with_paginator(
+        models.MenuEntry, obj_per_page=defaults.MENU_ENTRY_PER_PAGE)
     objects_list = paginator.current_page.object_list
     return {
         'paginator': paginator, 'objects_list': objects_list, 'nav': nav,
