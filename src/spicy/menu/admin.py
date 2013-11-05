@@ -6,8 +6,9 @@ from django.utils.translation import ugettext_lazy as _
 from spicy.core.admin.conf import AdminAppBase, AdminLink, Perms
 from spicy.core.profile.decorators import is_staff
 from spicy.core.siteskin.common import NavigationFilter
+from spicy.core.admin import defaults as admin_defaults
 from spicy.core.siteskin.decorators import render_to
-from . import forms, models, defaults
+from . import forms, models
 
 
 class AdminApp(AdminAppBase):
@@ -97,7 +98,7 @@ def delete(request, menu_id):
 def entry_list(request):
     nav = NavigationFilter(request)
     paginator = nav.get_queryset_with_paginator(
-        models.MenuEntry, obj_per_page=defaults.MENU_ENTRY_PER_PAGE)
+        models.MenuEntry, obj_per_page=admin_defaults.ADMIN_OBJECTS_PER_PAGE)
     objects_list = paginator.current_page.object_list
     return {
         'paginator': paginator, 'objects_list': objects_list, 'nav': nav,
