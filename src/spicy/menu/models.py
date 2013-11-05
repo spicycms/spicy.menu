@@ -4,7 +4,6 @@ from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
-from . import defaults
 
 
 class Menu(models.Model):
@@ -32,7 +31,8 @@ class Menu(models.Model):
 
         # Group into {parent_id: entry} dict.
         entries_list = sorted(
-            entries_dict.values(), key=lambda item: item.parent_id)
+            entries_dict.values(),
+            key=lambda item: (item.parent_id, item.position))
         grouped_entries = dict(
             (key, list(value)) for key, value in itertools.groupby(
                 entries_list, lambda entry: entry.parent_id))
@@ -80,5 +80,10 @@ class MenuEntry(models.Model):
         ordering = 'menu', 'parent__position', 'position',
 
     def __unicode__(self):
-        return self.title
-
+        if self.title:
+            return self.title
+        else:
+            try:
+                return unicode(self.consumer)
+            except:
+                return u''
