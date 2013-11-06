@@ -26,9 +26,9 @@ class MenuNode(template.Node):
         Render node list starting from tree top.
         """
         return u''.join([
-            self.render_entry(context, tree, is_root=True)])
+            self.render_entry(context, tree, level=0)])
         
-    def render_entry(self, context, tree, **extra_data):
+    def render_entry(self, context, tree, level, **extra_data):
         """
         Render a single entry.
 
@@ -45,8 +45,10 @@ class MenuNode(template.Node):
                 if children:
                     children_results.append(
                         self.render_entry(
-                            context, children))
+                            context, children, level + 1))
                 child_data['children'] = mark_safe(u''.join(children_results))
+                child_data['level'] = level
+                child_data['is_root'] = level == 0
                 entry_context['menu'] = child_data
                 result += self.nodelist.render(entry_context)
         return result
@@ -62,7 +64,8 @@ class MenuNode(template.Node):
             data['title'] = entry.title or unicode(
                 entry.consumer if entry.has_consumer() else '')
             data['url'] = entry.url or (
-                entry.has_consumer() and entry.consumer.get_absolute_url()) or u''
+                entry.has_consumer() and entry.consumer.get_absolute_url()
+            ) or u''
             data['first'] = i == 0
             data['last'] = i == tree_len - 1
             yield entry, data, children
@@ -73,7 +76,7 @@ def menu(parser, token):
     """
     {% menu slug %}
     {% if menu.first %}
-    <ul>
+    <ul class='l{{ menu.level }}'>
     {% endif %}    
       <li>
         {% if menu.is_root %}<h2>{{ menu.title }}</h2>
