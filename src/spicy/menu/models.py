@@ -70,7 +70,7 @@ class MenuEntry(models.Model):
     url = models.CharField(
         _('URL'), max_length=255, blank=True,
         help_text=_('Use if no content is attached'))
-    position = models.PositiveSmallIntegerField(_('Position'))
+    position = models.PositiveSmallIntegerField(_('Position'), default=0)
 
     def has_consumer(self):
         return bool(self.consumer_type_id and self.consumer_id)

@@ -39,6 +39,7 @@ setup(
     namespace_packages=['spicy',],
 
     install_requires=[
+        'django-autocomplete-light==2.0.0a15'
     ],
     dependency_links=[
     ],
