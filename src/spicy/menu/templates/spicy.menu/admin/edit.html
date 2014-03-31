@@ -3,7 +3,9 @@
 {% block title %}{% trans "Edit" %} {{ form.instance.title }}{% endblock %}
 {% block status_title %}<i class="icon-pencil"></i> {{ form.instance.title }}{% endblock status_title %}
 {% block status_stats %}
+{% comment %}
 <a class="pull-right" href="{% url 'feedback:admin:view-pattern' form.instance.pk %}" target="_blank"><i class="icon-eye-open icon-2x"></i></a>
+{% endcomment %}
 {% endblock status_stats %}
 
 {% block content %}

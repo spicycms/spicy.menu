@@ -9,20 +9,23 @@ class MenuForm(forms.ModelForm):
         model = models.Menu
 
 
-class AutocompleteMenuEntries(autocomplete_light.AutocompleteGenericBase):
-    choices = utils.get_autocomplete_choices()
-    search_fields = utils.get_autocomplete_search_fields()
+try:
+    class AutocompleteMenuEntries(autocomplete_light.AutocompleteGenericBase):
+        choices = utils.get_autocomplete_choices()
+        search_fields = utils.get_autocomplete_search_fields()
 
-autocomplete_light.register(AutocompleteMenuEntries)
+    autocomplete_light.register(AutocompleteMenuEntries)
 
 
-class EntryForm(GenericModelForm):
-    consumer = autocomplete_light.GenericModelChoiceField(
-        required=False,
-        widget=autocomplete_light.ChoiceWidget(
-            autocomplete=AutocompleteMenuEntries,
-            attrs={'minimum_characters': 0}))
+    class EntryForm(GenericModelForm):
+        consumer = autocomplete_light.GenericModelChoiceField(
+            required=False,
+            widget=autocomplete_light.ChoiceWidget(
+                autocomplete=AutocompleteMenuEntries,
+                attrs={'minimum_characters': 0}))
 
-    class Meta:
-        model = models.MenuEntry
-        fields = 'menu', 'parent', 'title', 'url', 'position'
+        class Meta:
+            model = models.MenuEntry
+            fields = 'menu', 'parent', 'title', 'url', 'position'
+except:
+    pass
