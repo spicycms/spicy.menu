@@ -94,7 +94,7 @@ def delete(request, menu_id):
 
 
 @is_staff(required_perms='menu.change_menu')
-@render_to('list.html', use_admin=True)
+@render_to('list_entry.html', use_admin=True)
 def entry_list(request):
     nav = NavigationFilter(request)
     paginator = nav.get_queryset_with_paginator(

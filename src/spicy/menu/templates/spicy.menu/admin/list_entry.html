@@ -1,0 +1,75 @@
+{% extends current_admin_base %}
+{% load navigator sk pagination %}
+{% load url from future %}
+
+{% block title %}{% if title %}{{ title }}{% else %}{% trans "List of" %} {{ app.label }}{% endif %}{% endblock %}
+{% block status_title %}{% if title %}{{ title }}{% else %}{% trans "List of" %} {{ app.label }}{% endif %}{% endblock status_title %}
+{% block status_stats %}{% endblock status_stats %}
+
+{% block content %}
+
+{% if objects_list|length > 0 %}
+
+<div class="container-fluid padded">
+  <div class="row-fluid">
+    <div class="span12">
+      
+      <div class="box">	
+        <div class="box-content">
+	  
+          <div class="table table-normal">            
+            <div class="hpadded">
+              <div class="pagination pagination-small" style="margin-top: 0">
+                {% pagination %}
+              </div>
+            </div>
+
+            <table class="table table-normal" style="border-top: 1px solid #CDCDCD;">
+              <thead>
+                <tr role="row">
+		  <td>{% trans "Select all" %}</td>
+		  <td>{% nav_order_url nav 'id' _('Id') "icon-sort" "icon-sort-down" "icon-sort-up" %}</td>
+                  <td>
+                    {% trans "Object name" %}
+                  </td>		  
+                  <td>{% trans "Menu" %}</td>
+		  {#% for field in app.list_model.display_list %#}		                    
+		  
+                </tr>
+              </thead>
+
+              <tbody>
+                {% for obj in objects_list %}
+                <tr class="{% cycle 'odd' 'even' %}">
+                  <td class="icon">
+                    <input type="checkbox" name="select"  class="icheck" id="{{ obj.id }}" autocomplete="off" />
+                  </td>
+		  <td>{{ obj.pk }}</td>
+                  <td>
+		    {% if not edit_url %}{% captureas edit_url %}{{ app.name }}:admin:edit{% endcaptureas %}{% endif %}
+                    <a href="{% url edit_url obj.pk %}"> {{ obj }}</a>
+                  </td>                 
+            <td>{{ obj.menu }} </td>
+		</tr>
+		{% endfor %}
+	      </tbody>
+	    </table>
+
+	    <div class="table-footer">
+	      <div class="hpadded" style="margin-top: 5px;">
+		<div class="pagination pagination-small" style="margin-top: 0">
+		  {% pagination %}
+		</div>
+	      </div>
+	    </div>
+	    
+	  </div>
+	</div>
+	
+	{% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
