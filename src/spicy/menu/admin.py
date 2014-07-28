@@ -25,7 +25,7 @@ class AdminApp(AdminAppBase):
 
     dashboard_links = [
         AdminLink(
-            'menu:admin:create', _('Create menu'),
+            'menu:admin:create', _('Create menu'), models.Menu.objects.count(),
             icon_class='icon-list', perms='menu.add_menu'),
     ]
 
