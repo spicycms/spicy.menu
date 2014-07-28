@@ -3,7 +3,7 @@ from django import http
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.utils.translation import ugettext_lazy as _
-from spicy.core.admin.conf import AdminAppBase, AdminLink, Perms
+from spicy.core.admin.conf import AdminAppBase, AdminLink
 from spicy.core.profile.decorators import is_staff
 from spicy.core.admin import defaults as admin_defaults
 from spicy.core.siteskin.decorators import render_to
@@ -23,9 +23,11 @@ class AdminApp(AdminAppBase):
         AdminLink('menu:admin:entries-list', _('Menu entries')),
     )
 
-    create = AdminLink('menu:admin:create', _('Create menu'),)
-
-    perms = Perms(view=[],  write=[], manage=[])
+    dashboard_links = [
+        AdminLink(
+            'menu:admin:create', _('Create menu'),
+            icon_class='icon-list', perms='menu.add_menu'),
+    ]
 
     @render_to('menu.html', use_admin=True)
     def menu(self, request, *args, **kwargs):
