@@ -10,26 +10,19 @@
   </a>
 
   <ul id="menu" class="collapse {% if "/admin/menu/" in request.path %} in{% endif %}">
+
     <li>
       <a href="{% url 'menu:admin:create' %}">
-        <i class="icon-plus-sign-alt"></i> {% trans "Create menu" %}
+        <i class="icon-list-alt"></i> {% trans "Create menu" %}
       </a>
     </li>
-    <li>
-      <a href="{% url 'menu:admin:index' %}">
-        <i class="icon-list-alt"></i> {% trans "All menus" %}
+    {% for m in menus %}
+         <li>
+      <a href="{% url 'menu:admin:index' %}{{m.slug}}/">
+       {{m.title}}
       </a>
     </li>
-    <li>
-      <a href="{% url 'menu:admin:entry-add' %}">
-        <i class="icon-plus-sign-alt"></i> {% trans "Create menu entry" %}
-      </a>
-    </li>
-    <li>
-      <a href="{% url 'menu:admin:entry-list' %}">
-        <i class="icon-list-alt"></i> {% trans "All menu entries" %}
-      </a>
-    </li>
+    {% endfor %}
   </ul>
 </li>
 {% endif %}

@@ -2,11 +2,13 @@ from copy import copy
 from django import template
 from django.utils.safestring import mark_safe
 from spicy.menu import models
+from django.contrib.contenttypes.models import ContentType
 
 register = template.Library()
 
 
 class MenuNode(template.Node):
+
     def __init__(self, slug, nodelist):
         self.slug = template.Variable(slug)
         self.nodelist = nodelist
@@ -18,7 +20,7 @@ class MenuNode(template.Node):
             menu = models.Menu.objects.get(slug=slug)
         except models.Menu.DoesNotExist:
             return '<!-- menu with slug ' + slug + ' doesn\'t exist'
-        
+
         return self.render_entries(context, menu.get_tree())
 
     def render_entries(self, context, tree):
@@ -27,7 +29,7 @@ class MenuNode(template.Node):
         """
         return u''.join([
             self.render_entry(context, tree, level=0)])
-        
+
     def render_entry(self, context, tree, level, **extra_data):
         """
         Render a single entry.
@@ -116,3 +118,51 @@ def menu(parser, token):
     nodelist = parser.parse(('endmenu',))
     parser.delete_first_token()
     return MenuNode(arg, nodelist)
+
+
+def verbatim(parser, token):
+    # Whatever is between {% verbatim %} and {% endverbatim %} will be preserved as
+    # raw, unrendered template code.
+    text = []
+    parse_until = 'endverbatim'
+    tag_mapping = {
+        template.TOKEN_TEXT: ('', ''),
+        template.TOKEN_VAR: ('{{ ', ' }}'),
+        template.TOKEN_BLOCK: ('{% ', ' %}'),
+        template.TOKEN_COMMENT: ('{# ', ' #}'),
+    }
+    # By the time this template tag is called, the template system has already
+    # lexed the template into tokens. Here, we loop over the tokens until
+    # {% endverbatim %} and parse them to TextNodes. We have to add the start and
+    # end bits (e.g. "{{" for variables) because those have already been
+    # stripped off in a previous part of the template-parsing process.
+    while parser.tokens:
+        token = parser.next_token()
+        if token.token_type == template.TOKEN_BLOCK and token.contents == parse_until:
+            return template.TextNode(u''.join(text))
+        start, end = tag_mapping[token.token_type]
+        text.append(u'%s%s%s' % (start, token.contents, end))
+    parser.unclosed_block_tag(parse_until)
+verbatim = register.tag(verbatim)
+
+
+@register.filter
+def content_type_icon(obj):
+    if not obj:
+        return False
+    ct = ContentType.objects.get_for_model(obj).name
+    if ct == 'document':
+        return "icon icon-edit"
+    elif ct == 'landing':
+        return "icon icon-file"
+    elif ct == 'simple page':
+        return "icon icon-sitemap"
+    else:
+        return ""
+
+
+@register.filter
+def content_type_id(obj):
+    if not obj:
+        return False
+    return ContentType.objects.get_for_model(obj).id

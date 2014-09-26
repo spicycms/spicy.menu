@@ -8,7 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 
 class Menu(models.Model):
     title = models.CharField(_('Title'), max_length=255)
-    slug = models.SlugField(_('Slug'))
+    slug = models.SlugField(_('Slug'), unique=True)
 
     class Meta:
         db_table = 'mn_menu'
