@@ -157,7 +157,7 @@ def generate_menu_json(menu):
     data_json.append(dict(id="m" + str(menu.id),
                           text=menu.title,
                           parent="#",
-                          state={"opened": "true", "disabled"  : "true"},
+                          state={"opened": "true", "disabled": "true"},
                           icon="icon-star icon"),)
     for item in children:
         data_json.append(dict(id=generateItemId(item),
