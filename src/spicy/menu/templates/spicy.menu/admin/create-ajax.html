@@ -1,0 +1,28 @@
+{% load spicy_admin i18n sk %}
+
+<h4 class="padded">{% trans "Create new menu entry" %}</h4>
+          <form id="form_ajax" class="form-horizontal fill-up validatable" method="post" action="{{ request.path }}" autocomplete="off"
+    enctype="multipart/form-data">{% csrf_token %}
+
+
+      <div class="row-fluid">
+        <ul class="padded separate-sections">
+    {{ form.as_ul }}
+
+
+  <li><input type="checkbox" name="my-checkbox" data-on-label="Object" data-off-label="URL" data-on="default" data-off="default" checked></li>
+
+
+    <li><div class="alert alert-error hide"></div></li>
+        </ul>   
+
+
+
+      </div>
+
+      <div class="form-actions">
+        <button id="create_ajax" type="submit" class="btn btn-green pull-right">{% trans "Create" %}</button>
+            </div>
+
+          </form>
+       

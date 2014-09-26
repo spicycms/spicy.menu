@@ -1,0 +1,162 @@
+{% extends current_admin_base %} {% load navigator sk pagination static menu %} {% load url from future %} {% block title %}{{object.title}}{% endblock %} {% block status_title %}{{object.title}}{% endblock status_title %} {% block status_stats %}{% endblock status_stats %} {% block extra_head %}
+<link rel="stylesheet" href="{% static 'spicy.menu/css/jstree.css' %}" />
+<link rel="stylesheet" href="{% static 'spicy.menu/css/bootstrap-switch.min.css' %}" />
+<script type="text/javascript" src="{% static 'spicy.menu/js/jstree.min.js' %}"></script>
+
+<script type="text/javascript">
+
+var full_path_with_port = '{{fp}}'
+
+</script>
+
+
+<script type="text/javascript" src="{% static 'spicy.menu/js/menuscripts.js' %}"></script>
+
+{% endblock extra_head %} {% block content %} {% if objects_list|length > 0 %}
+
+<div class="container-fluid padded">
+    <div class="row-fluid">
+        <div class="span6">
+
+            <div class="box">
+                <div class="box-content">
+<h4 class="padded">{% trans "Change" %} «{{object.title}}»</h4>
+
+                    <form id="form_menu" name="edit_{{ app.name }}" class="form-horizontal fill-up validatable" method="post" action="{{request.path}}" autocomplete="off" enctype="multipart/form-data">{% csrf_token %}
+
+                        <div class="row-fluid">
+                            <ul class="padded separate-sections">
+                                {{ form.as_ul }} {% if 'entries' in request.path %}
+                                <li>
+                                    <input type="checkbox" name="my-checkbox" data-on-label="{% trans 'Object' %}" data-off-label="URL" data-on="default" data-off="default" checked>
+                                </li>
+
+                                {% endif %}
+
+                            </ul>
+
+
+                        </div>
+
+
+
+                        <div class="form-actions">
+
+                            <a class="btn btn-red" href="">{% trans "Delete" %}</a>
+
+
+                            <div class="pull-right">
+
+                                <button type="submit" class="btn btn-blue" name="save">{% trans "Save changes" %}</button>
+
+                            </div>
+                        </div>
+
+                    </form>
+
+                </div>
+
+            </div>
+
+            <div class="box">
+                <div class="box-content padded">
+                    <h4>{% trans "All entries for" %} «{{object.title}}»</h4>
+
+                    <a href="#{{menu.slug}}" class="add_menu_entry btn btn-green"><i class="icon-plus"></i> {% trans "Create menu entry" %}</a>
+
+
+
+
+
+                    <div class="tree padded" data-menu-slug="{{object.slug}}" data-menu-id="{{object.id}}"></div>
+
+
+
+
+                </div>
+
+
+            </div>
+
+
+            <div class="box">
+                <div class="box-content padded preview">
+                    
+
+
+
+
+                </div>
+
+
+            </div>
+
+            <div class="box">
+                <div class="box-content">
+
+                    <div class="padded">
+                        <h4>{% trans "Code for your templates" %}</h4>
+                        <pre>
+{% verbatim %}
+    {% load menu %}
+    {% menu <span class="slug"></span> %}
+    {% if menu.first %}
+    &lt;ul class='level{{ menu.level }}'&gt;
+    {% endif %}    
+      &lt;li&gt;
+        {% if menu.is_root %}
+        &lt;h4&gt;&lt;a href=&quot;{{menu.url}}&quot;&gt;{{ menu.title }}&lt;/a&gt;&lt;/h4&gt;
+        {% else %}&lt;a href=&quot;{{menu.url}}&quot;&gt;{{ menu.title }}&lt;/a&gt;
+        {% endif %}
+        {{ menu.children }}
+      &lt;/li&gt;
+    {% if menu.last %}
+    &lt;/ul&gt;
+    {% endif %}
+    {% endmenu %}
+{% endverbatim %}</pre>
+                        <span class="moveslug">{{object.slug}}</span>
+                        <!--<h5>{% trans "Change 'main-menu' to your slug." %}</h5>-->
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+
+        <div class="span6">
+
+            <div class="box">
+                <div class="box-content">
+
+
+                    <div class="entryedit">
+                        <div class="padded">
+                            <h4>{% trans "How to edit menu" %}</h4>
+                            <p>{% trans "You can select an item within a tree to edit or delete it" %}</p>
+                            <p>{% trans "You can also move items via drag-n-drop" %}</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="box hide plugin">
+                <div class="box-content padded">
+
+
+
+                    <h4 class="consumer_title">{% trans "Connected object" %}</h4>
+                    <div class="linked"></div>
+
+
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+    {% endif %} {% endblock %} {% block extra_js %} {% include 'spicy.menu/admin/autocomplete_static.html' %}
+    <script type="text/javascript" src="{% static 'spicy.menu/js/bootstrap-switch.min.js' %}"></script>
+    {% endblock %}

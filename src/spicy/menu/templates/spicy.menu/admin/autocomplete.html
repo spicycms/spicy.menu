@@ -1,0 +1,10 @@
+{% load menu %}
+<div data-value="{{choice|content_type_id}}-{{ choice.pk }}">
+    <i class="{{choice|content_type_icon}}"></i>
+       {% if choice.title %}
+            {{choice.title}}
+            {% else %}
+            {{ choice }}
+        {% endif %} 
+   
+</div>

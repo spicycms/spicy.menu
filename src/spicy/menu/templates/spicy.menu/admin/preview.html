@@ -1,0 +1,19 @@
+{% load menu %}
+
+
+<h4>{% trans "Preview" %}</h4>
+
+    {% menu slug %}
+    {% if menu.first %}
+    <ul class='level{{ menu.level }}'>
+    {% endif %}    
+      <li>
+        {% if menu.is_root %}<h4><a href="{{menu.url}}">{{ menu.title }}</a></h4>
+        {% else %}<a href="{{menu.url}}">{{ menu.title }}</a>
+        {% endif %}
+        {{ menu.children }}
+      </li>
+    {% if menu.last %}
+    </ul>
+    {% endif %}
+    {% endmenu %}

@@ -1,0 +1,66 @@
+{% load spicy_admin sk navigator %}{% load url from future %}
+
+
+<script>
+
+
+$(function() {
+
+           spicy_menu.init_loaded_page()
+
+        });
+
+</script>
+
+<h4 class="padded">
+       {% trans "Change" %} «{{instance.title}}»
+      </h4>
+
+<form id="form_ajax" name="edit_{{ app.name }}" class="form-horizontal fill-up validatable" method="post" action="{{request.path}}" autocomplete="off" enctype="multipart/form-data">{% csrf_token %}
+
+    <div class="row-fluid">
+        <ul class="padded separate-sections">
+            {{ form.as_ul }} {% if 'entries' in request.path %}
+            <li>
+                <input type="checkbox" name="my-checkbox" data-on-label="{% trans 'Object' %}" data-off-label="URL" data-on="default" data-off="default" checked>
+            </li>
+
+            {% endif %}
+
+            <li>
+                <div class="alert alert-error hide"></div>
+            </li>
+        </ul>
+
+
+    </div>
+
+    </div>
+    </div>
+
+    <div class="form-actions">
+        {% if 'entries' in request.path %} {% captureas delete_url %}{{ app.name }}:admin:entry-delete{% endcaptureas %} {% else %} {% captureas delete_url %}{{ app.name }}:admin:delete{% endcaptureas %} {% endif %}
+
+        <a class="btn btn-red" href="{% url delete_url form.instance.pk %}">{% trans "Delete" %}</a>
+
+
+        <div class="pull-right">
+     
+
+            <span class="dropdown" style="padding-bottom:8px">
+  <a class="dropdown-toggle btn btn-blue" data-toggle="dropdown" href="#">{% trans "Copy to another menu..." %}</a>
+  <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+  {% for m in menus %}
+    <li><a class="copylink" href="http://dev.bramabrama.com:8080/admin/menu/entries/{{instance.id}}/copy/{{m.id}}/">{{m.title}}</a></li>
+  {% endfor %}
+   
+  </ul>
+</span>
+           
+
+            <button type="submit" class="btn btn-blue" name="save">{% trans "Save changes" %}</button>
+
+        </div>
+    </div>
+
+</form>
