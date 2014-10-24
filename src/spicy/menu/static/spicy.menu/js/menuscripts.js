@@ -190,7 +190,7 @@ spicy_menu.init = function() {
 
             if (spicy_menu.parseId(data.node.id).length > 1) {
 
-                spicy_menu.loadEditor(full_path_with_port + '/admin/menu/entries/' + spicy_menu.parseId(data.node.id)[1] + '/');
+                spicy_menu.loadEditor(host_with_port + '/admin/menu/entries/' + spicy_menu.parseId(data.node.id)[1] + '/');
 
 
                 if (data.node.original.consumer) {  //related object (consumer) info
