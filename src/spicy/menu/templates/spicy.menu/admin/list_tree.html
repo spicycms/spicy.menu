@@ -1,4 +1,4 @@
-{% extends current_admin_base %} {% load navigator sk pagination static menu %} {% load url from future %} {% block title %}{{object.title}}{% endblock %} {% block status_title %}{{object.title}}{% endblock status_title %} {% block status_stats %}{% endblock status_stats %} {% block extra_head %}
+{% extends current_admin_base %} {% load navigator sk pagination staticfiles menu %} {% load url from future %} {% block title %}{{object.title}}{% endblock %} {% block status_title %}{{object.title}}{% endblock status_title %} {% block status_stats %}{% endblock status_stats %} {% block extra_head %}
 <link rel="stylesheet" href="{% static 'spicy.menu/css/jstree.css' %}" />
 <link rel="stylesheet" href="{% static 'spicy.menu/css/bootstrap-switch.min.css' %}" />
 <script type="text/javascript" src="{% static 'spicy.menu/js/jstree.min.js' %}"></script>
