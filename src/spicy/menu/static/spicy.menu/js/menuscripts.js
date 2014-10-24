@@ -48,7 +48,7 @@ spicy_menu.init = function() {
 
         $.ajax({
             type: "GET",
-            url: full_path_with_port + '/admin/menu/' + this.menu_slug + '/preview/',
+            url: full_path_with_port + 'preview/',
             cache: false,
             async: false,
             success: function(data) {
@@ -134,7 +134,7 @@ spicy_menu.init = function() {
         var myjson;
         $.ajax({
             type: "GET",
-            url: full_path_with_port + '/admin/menu/ajax_list/' + this.menu_slug + '/',
+            url: host_with_port + '/admin/menu/ajax_list/' + this.menu_slug + '/',
             dataType: "json",
             cache: false,
             async: false,
@@ -173,7 +173,7 @@ spicy_menu.init = function() {
             $.ajax({
                 type: "POST",
                 dataType: 'json',
-                url: full_path_with_port + '/admin/menu/entries/' + spicy_menu.parseId(data.node.id)[1] + '/move/',
+                url: host_with_port + '/admin/menu/entries/' + spicy_menu.parseId(data.node.id)[1] + '/move/',
                 data: {
                     "parent": spicy_menu.parseId(data.node.parent)[1],
                     "position": data.position,
@@ -292,7 +292,7 @@ spicy_menu.init = function() {
             e.preventDefault();
             current_menu_id = $('.tree').attr('data-menu-id')
             // $("#tree").jstree("deselect_all");
-            spicy_menu.loadEditor(full_path_with_port + '/admin/menu/entries/add/?menu=' + current_menu_id)
+            spicy_menu.loadEditor(host_with_port + '/admin/menu/entries/add/?menu=' + current_menu_id)
             $("form#form_ajax").submit(function(e) {
                 alert = '<div class="padded"><div class="alert">Пункт меню успешно создан</div></div>'
                 current_menu_id = $('.tree').attr('data-menu-id')
