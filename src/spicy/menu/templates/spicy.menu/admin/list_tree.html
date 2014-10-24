@@ -2,14 +2,6 @@
 <link rel="stylesheet" href="{% static 'spicy.menu/css/jstree.css' %}" />
 <link rel="stylesheet" href="{% static 'spicy.menu/css/bootstrap-switch.min.css' %}" />
 <script type="text/javascript" src="{% static 'spicy.menu/js/jstree.min.js' %}"></script>
-
-<script type="text/javascript">
-
-var full_path_with_port = '{{fp}}'
-
-</script>
-
-
 <script type="text/javascript" src="{% static 'spicy.menu/js/menuscripts.js' %}"></script>
 
 {% endblock extra_head %} {% block content %} {% if objects_list|length > 0 %}
