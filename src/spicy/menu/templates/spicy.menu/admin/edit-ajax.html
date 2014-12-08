@@ -1,6 +1,7 @@
-{% load spicy_admin sk navigator %}{% load url from future %}
+{% load spicy_admin sk navigator staticfiles %}{% load url from future %}
 
-
+{% include 'spicy.menu/admin/autocomplete_static.html' %}
+    <script type="text/javascript" src="{% static 'spicy.menu/js/bootstrap-switch.min.js' %}"></script>
 <script>
 
 

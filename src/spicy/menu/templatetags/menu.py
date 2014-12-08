@@ -151,11 +151,12 @@ def content_type_icon(obj):
     if not obj:
         return False
     ct = ContentType.objects.get_for_model(obj).name
-    if ct == 'document':
+
+    if ct == 'Document':
         return "icon icon-edit"
-    elif ct == 'landing':
+    elif ct == 'Landing':
         return "icon icon-file"
-    elif ct == 'simple page':
+    elif ct == 'Simple page':
         return "icon icon-sitemap"
     else:
         return ""

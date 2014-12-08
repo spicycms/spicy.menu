@@ -2,7 +2,7 @@
 <div data-value="{{choice|content_type_id}}-{{ choice.pk }}">
     <i class="{{choice|content_type_icon}}"></i>
        {% if choice.title %}
-            {{choice.title}}
+            {{choice.title|truncatechars:"80"}}
             {% else %}
             {{ choice }}
         {% endif %} 

@@ -23,7 +23,7 @@ class Menu(models.Model):
         """
         # Create a dict with mapping of {id: entry}
         entries_dict = dict(
-            (entry.pk, entry) for entry in self.menuentry_set.all())
+            (entry.pk, entry) for entry in self.entries.all())
 
         # Set all parents.
         for entry in entries_dict.values():
@@ -58,7 +58,8 @@ class Menu(models.Model):
 
 
 class MenuEntry(models.Model):
-    menu = models.ForeignKey(Menu, verbose_name=_('Menu'))
+    menu = models.ForeignKey(
+        Menu, verbose_name=_('Menu'), related_name='entries')
     parent = models.ForeignKey(
         'self', null=True, blank=True, verbose_name=_('Parent'),
         related_name='children')
@@ -70,14 +71,18 @@ class MenuEntry(models.Model):
     url = models.CharField(
         _('URL'), max_length=255, blank=True,
         help_text=_('Use if no content is attached'))
-    position = models.PositiveSmallIntegerField(_('Position'), default=0)
+    position = models.PositiveSmallIntegerField(_('Position'), default=1)
+
+    def get_current_menu_count(self):
+        return MenuEntry.objects.filter(
+            parent=self.parent, menu=self.menu).count()
 
     def has_consumer(self):
         return bool(self.consumer_type_id and self.consumer_id)
 
     class Meta:
         db_table = 'mn_entry'
-        ordering = 'menu', 'parent__position', 'position',
+        ordering = 'position',
 
     def __unicode__(self):
         if self.title:
@@ -87,3 +92,13 @@ class MenuEntry(models.Model):
                 return unicode(self.consumer)
             except:
                 return u''
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            if self.get_current_menu_count():
+
+                self.position = self.get_current_menu_count() + 1
+            else:
+                self.position = 1
+
+        super(MenuEntry, self).save(*args, **kwargs)

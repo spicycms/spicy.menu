@@ -10,7 +10,6 @@ Let's establish the vocabulary used in this script, so that we speak the
 same language:
 
 - The text input element is "input",
-- The default text in the input is "placeholder",
 - The box that contains a list of choices is "box",
 - Each result in the "autocomplete" is a "choice",
 - With a capital A, "Autocomplete", is the class or an instance of the
@@ -138,9 +137,6 @@ yourlabs.Autocomplete = function (input) {
     // purposes.
     this.value = '';
 
-    // When the input is empty, show this text.
-    this.placeholder = 'type your search here';
-
     /*
     It is possible to wait until a certain number of characters have been
     typed in the input before making a request to the server, to limit the
@@ -252,9 +248,6 @@ the constructor, setup is done in this method. This allows to:
 - and *then* setup the instance.
  */
 yourlabs.Autocomplete.prototype.initialize = function() {
-    // Set the HTML placeholder attribute on the input.
-    this.input.attr('placeholder', this.placeholder);
-
     this.input
         .on('blur.autocomplete', $.proxy(this.inputBlur, this))
         .on('click.autocomplete', $.proxy(this.inputClick, this))
@@ -514,7 +507,7 @@ yourlabs.Autocomplete.prototype.fixPosition = function() {
     this.input.parents().filter(function() {
         return $(this).css('overflow') === 'hidden';
     }).first().css('overflow', 'visible');
-	
+    
     this.box.insertAfter(this.input).css(
             {top: pos.top + pos.height, left: pos.left});
 }
@@ -567,6 +560,8 @@ yourlabs.Autocomplete.prototype.fetch = function() {
 
 // Wrapped ajax call to use with setTimeout in fetch().
 yourlabs.Autocomplete.prototype.makeXhr = function() {
+    this.input.addClass('xhr-pending');
+
     this.xhr = $.ajax(this.url, {
         type: "GET",
         data: this.data,
@@ -576,6 +571,8 @@ yourlabs.Autocomplete.prototype.makeXhr = function() {
 
 // Callback for the ajax response.
 yourlabs.Autocomplete.prototype.fetchComplete = function(jqXHR, textStatus) {
+    this.input.removeClass('xhr-pending');
+
     if (this.xhr == jqXHR) this.xhr = false;
     if (textStatus == 'abort') return;
     this.show(jqXHR.responseText);
@@ -633,16 +630,25 @@ $.fn.yourlabsAutocomplete = function(overrides) {
 
     // If no Autocomplete instance is defined for this id, make one.
     if (autocomplete == undefined) {
-        if (overrides.url == undefined) {
-            alert('Autocomplete needs a url !');
-            return;
-        }
-
         // Instanciate Autocomplete.
         var autocomplete = new yourlabs.Autocomplete(this);
 
+        // Extend the instance with data-autocomplete-* overrides
+        for (var key in this.data()) {
+            if (!key) continue;
+            if (key.substr(0, 12) != 'autocomplete') continue;
+            var newKey = key.replace('autocomplete', '');
+            var newKey = newKey.charAt(0).toLowerCase() + newKey.slice(1);
+            autocomplete[newKey] = this.data(key);
+        }
+
         // Extend the instance with overrides.
         autocomplete = $.extend(autocomplete, overrides);
+
+        if (!autocomplete.url) {
+            alert('Autocomplete needs a url !');
+            return;
+        }
 
         this.yourlabsRegistry('autocomplete', autocomplete);
 

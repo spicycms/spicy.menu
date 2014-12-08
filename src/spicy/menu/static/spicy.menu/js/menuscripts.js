@@ -169,20 +169,26 @@ spicy_menu.init = function() {
             },
             'plugins': ["dnd"]
         }).on("move_node.jstree", function(e, data) { //sends POST request to django to move node
-
+            if (!data.position) {
+                data.position = 0
+            }
+            console.log(data.position)
             $.ajax({
                 type: "POST",
                 dataType: 'json',
                 url: host_with_port + '/admin/menu/entries/' + spicy_menu.parseId(data.node.id)[1] + '/move/',
                 data: {
                     "parent": spicy_menu.parseId(data.node.parent)[1],
-                    "position": data.position,
+                    "position": data.position+1,
                     "menu": spicy_menu.parseId(data.node.parent)[0]
                 },
+                success: function() {
+                 spicy_menu.get_preview();
+            }
 
             });
 
-            spicy_menu.get_preview()
+           
 
         }).on("select_node.jstree", function(evt, data) { //opens block with a form (and related object info) on node select
 

@@ -1,4 +1,7 @@
-{% load spicy_admin i18n sk %}
+{% load spicy_admin staticfiles i18n sk %}
+
+{% include 'spicy.menu/admin/autocomplete_static.html' %}
+    <script type="text/javascript" src="{% static 'spicy.menu/js/bootstrap-switch.min.js' %}"></script>
 
 <h4 class="padded">{% trans "Create new menu entry" %}</h4>
           <form id="form_ajax" class="form-horizontal fill-up validatable" method="post" action="{{ request.path }}" autocomplete="off"

@@ -13,7 +13,7 @@ from . import forms, models
 
 def path_with_port(request):
 
-    if request.META['SERVER_PORT']:
+    if request.META['SERVER_PORT'] and request.META['SERVER_PORT'] != '80':
         return 'http://' + request.get_host() + ':' + request.META['SERVER_PORT']
     else:
         return 'http://' + request.get_host()
@@ -61,8 +61,7 @@ def menu_list_tree(request, menu_slug):
         else:
             return {'form': form,
                     'menus': menus,
-                    'object': menu,
-                    'fp': path_with_port(request)}
+                    'object': menu}
 
     else:
         form = forms.MenuForm(instance=menu)
@@ -71,8 +70,7 @@ def menu_list_tree(request, menu_slug):
     # objects_list = paginator.current_page.object_list
         return {'form': form,
                 'menus': menus,
-                'object': menu,
-                'fp': path_with_port(request)}
+                'object': menu}
 
 
 @is_staff(required_perms='menu.add_menu')
@@ -127,11 +125,11 @@ def generate_menu_json(menu):
 
     def getIcon(item):
         if item.consumer:
-            if item.consumer_type.name == 'document':
+            if item.consumer_type.name == 'Document':
                 return "icon icon-edit"
-            elif item.consumer_type.name == 'landing':
+            elif item.consumer_type.name == 'Landing':
                 return "icon icon-file"
-            elif item.consumer_type.name == 'simple page':
+            elif item.consumer_type.name == 'Simple page':
                 return "icon icon-sitemap"
 
         elif item.url:
@@ -141,8 +139,8 @@ def generate_menu_json(menu):
             return None
 
     def getLabel(item):
-        h = {'document': 'presscenter/edit',
-             'landing': 'landing', 'simple page': 'simplepages'}
+        h = {'Document': 'presscenter/edit',
+             'Landing': 'landing', 'Simple page': 'simplepages'}
         return h[item.consumer_type.name]
 
     def getConsumer(item):
@@ -193,9 +191,17 @@ def entry_move(request, entry_id):
 
         entry = get_object_or_404(models.MenuEntry, pk=entry_id)
 
+        old_position = entry.position
+
         form = forms.PartialEntryForm(request.POST, entry)
         if form.is_valid():
-            entry.position = request.POST.get('position')
+
+            entry.position = int(request.POST.get('position'))
+
+            if int(request.POST.get('position')) < old_position:
+
+                entry.position -= 1  # magic, don't touch
+
             if request.POST.get('parent'):
                 entry.parent = get_object_or_404(
                     models.MenuEntry, pk=int(request.POST.get('parent')))
@@ -205,6 +211,23 @@ def entry_move(request, entry_id):
                 request.POST.get('menu')))
 
             entry.save(force_update=True)
+
+            entries = models.MenuEntry.objects.filter(
+                menu=entry.menu, parent=entry.parent)
+
+            positions = [ent.position for ent in entries]
+
+            p_range = [x for x in range(1, len(entries) + 1)]
+
+            if positions != p_range:
+
+                for i, ent in enumerate(entries):
+
+                    if ent.position != p_range[i]:
+
+                        ent.position = p_range[i]
+                        ent.save()
+
             return http.HttpResponse()
         else:
             errors = form.errors
@@ -287,6 +310,7 @@ def entry_add(request):
 @render_to('edit-ajax.html', use_admin=True)
 def entry_edit_ajax(request, entry_id):
     entry = get_object_or_404(models.MenuEntry, pk=entry_id)
+    tree_id = "m" + str(entry.menu_id) + "e" + str(entry.id)
     if request.method == 'POST':
         form = forms.AjaxEntryForm(request.POST, instance=entry)
         if form.is_valid():
@@ -302,7 +326,8 @@ def entry_edit_ajax(request, entry_id):
             url=reverse('menu:admin:entry-add'), menu=entry.menu_id,
             parent=entry_id),
         'menus': models.Menu.objects.exclude(id=entry.menu.id),
-        'instance': entry}
+        'instance': entry,
+        'tree_id': tree_id}
 
 
 @is_staff(required_perms='menu.delete_menuentry')
