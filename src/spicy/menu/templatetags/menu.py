@@ -19,7 +19,7 @@ class MenuNode(template.Node):
         try:
             menu = models.Menu.objects.get(slug=slug)
         except models.Menu.DoesNotExist:
-            return '<!-- menu with slug ' + slug + ' doesn\'t exist'
+            return '<!-- menu with slug ' + slug + ' doesn\'t exist -->'
 
         return self.render_entries(context, menu.get_tree())
 
