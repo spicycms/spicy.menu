@@ -38,7 +38,7 @@ spicy_menu.init = function() {
         //a little fix due to no decent verbatim template tag in django 1.4
         slug = $('.moveslug').html()
         $('.moveslug').remove()
-        $('.slug').html(slug)
+        $('.slug').html('\''+slug+'\'')
     }
 
 
@@ -63,7 +63,7 @@ spicy_menu.init = function() {
 
         //submit form via ajax
         //by default (without url) loads html from django request
-        //with url parameter gets url from django copy view and redirects 
+        //with url parameter gets url from django copy view and redirects
 
 
         e.preventDefault();
@@ -188,7 +188,7 @@ spicy_menu.init = function() {
 
             });
 
-           
+
 
         }).on("select_node.jstree", function(evt, data) { //opens block with a form (and related object info) on node select
 
@@ -280,7 +280,7 @@ spicy_menu.init = function() {
     this.init_loaded_page = function() { //initialize scripts on a page loaded via ajax
 
          $("form#form_ajax").submit(function(e) {
-               
+
                 spicy_menu.subm_ajax_form(e);
 
             });

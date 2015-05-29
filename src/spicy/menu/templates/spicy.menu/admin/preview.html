@@ -6,7 +6,7 @@
     {% menu slug %}
     {% if menu.first %}
     <ul class='level{{ menu.level }}'>
-    {% endif %}    
+    {% endif %}
       <li>
         {% if menu.is_root %}<h4><a href="{{menu.url}}">{{ menu.title }}</a></h4>
         {% else %}<a href="{{menu.url}}">{{ menu.title }}</a>
