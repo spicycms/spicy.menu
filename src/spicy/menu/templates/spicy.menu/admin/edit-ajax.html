@@ -52,7 +52,7 @@ $(function() {
   <a class="dropdown-toggle btn btn-blue" data-toggle="dropdown" href="#">{% trans "Copy to another menu..." %}</a>
   <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
   {% for m in menus %}
-    <li><a class="copylink" href="http://dev.bramabrama.com:8080/admin/menu/entries/{{instance.id}}/copy/{{m.id}}/">{{m.title}}</a></li>
+    <li><a class="copylink" href="/admin/menu/entries/{{instance.id}}/copy/{{m.id}}/">{{m.title}}</a></li>
   {% endfor %}
    
   </ul>
