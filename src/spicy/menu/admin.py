@@ -13,10 +13,25 @@ from . import forms, models
 
 def path_with_port(request):
 
-    if request.META['SERVER_PORT'] and request.META['SERVER_PORT'] != '80':
-        return 'http://' + request.get_host() + ':' + request.META['SERVER_PORT']
-    else:
-        return 'http://' + request.get_host()
+    try:
+
+        # if request.META.get('SERVER_PORT') and request.META.get('SERVER_PORT')\
+        #         != '80':
+        #     return 'http://' + request.get_host() + ':'\
+        #         + request.META['SERVER_PORT'] + request.path
+        # else:
+        if request.is_secure():
+            return 'https://' + request.get_host() + request.path
+        else:
+            return 'http://' + request.get_host() + request.path
+    except:
+        return ''
+
+
+#    if request.META['SERVER_PORT'] and request.META['SERVER_PORT'] != '80':
+#        return 'http://' + request.get_host() + ':' + request.META['SERVER_PORT']
+#    else:
+#        return 'http://' + request.get_host()
 
 
 class AdminApp(AdminAppBase):
