@@ -21,8 +21,8 @@ def long_description():
 setup(
     name='spicy.menu',
     version='1.0',
-    author='Stanislav Shtin',
-    author_email='antisvin@gmail.com',
+    author='BramaBrama Ltd',
+    author_email='help@spicycms.com',
     description='Spicy menu',
     license='BSD',
     keywords='django, cms',
