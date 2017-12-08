@@ -96,7 +96,7 @@ def create(request):
         if form.is_valid():
             instance = form.save()
             return http.HttpResponseRedirect(
-                path_with_port(request) + '/admin/menu/' + instance.slug + '/')
+                 '/admin/menu/' + instance.slug + '/')
     else:
         form = forms.MenuForm()
     return {'form': form}

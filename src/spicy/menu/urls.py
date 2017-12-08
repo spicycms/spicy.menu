@@ -12,7 +12,7 @@ admin_urls = patterns(
 
     url(r'^$', 'create', name='index'),
     url(r'^ajax_list/(?P<menu_slug>\S+)/$', 'menu_list_ajax', name='ajaxlist'),
-    url(r'^create/$', 'create', name='create'),
+    url(r'^create$', 'create', name='create'),
     url(r'^(?P<menu_slug>[-_a-zA-Z0-9]+)/$',
         'menu_list_tree', name='edit-ajax'),
     url(r'^(?P<menu_slug>[-_a-zA-Z0-9]+)/preview/$',
